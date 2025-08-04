@@ -1,3 +1,7 @@
+package src;
+
+import src.utils.Sale;
+
 import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -9,6 +13,8 @@ public class Main {
 
   public static void main(String[] args) {
     ArrayList<String> sales = new ArrayList<String>();
+    Sale saleData = new Sale("2023-10-01", "Laptop", 2, 1500.00);
+    System.out.println("Sample Sale Data: " + saleData.toString());
 
     // Get the file paths from command line arguments
     if (args.length == 0) {

@@ -1,4 +1,4 @@
-# PROGRAMMING EXERCISE
+# CLIENT REQUIREMENTS
 
 A client in the retail sector provides several files tracking all their sales. Each file contains up to a million lines of the following format:
 
@@ -18,10 +18,22 @@ Submit your solution’s source code, a screenshot of a sample run of the applic
 
 ---
 
-# Instructions
+# USING THE APPLICATION
 
-### Launching the application
+### Instructions
 
-execute the command `java Main <path/to/file1> <path/to/file2> ...` with at least one filepath from the root directory of the application
-`<path/to/file>`: relative or absolute path of a text file to be analyzed (e.g. `data/data.txt` or `/home/user/sales-analytics-application/data/data.txt`)
+**Compile the program (optional):**
 
+1. Set the `CLASSPATH` variable
+
+  - For Linux `export CLASSPATH=$CLASSPATH:/home/user/workspace/sales-analytics-application/classes`
+  - For Windows `set CLASSPATH=%CLASSPATH%;C:\Users\user\workspace\sales-analytics-application\classes`
+
+2. Compile the Java program
+
+  - Executing the following command from the project root directory: `javac -d classes src/Main.java`
+
+**Run the program**
+
+- Execute the command following from the project root directory `java src/Main <path/to/file1> <path/to/file2> ...`, with at least one filepath as argument
+- Note: `<path/to/file>` is the relative or absolute path of a text file to be analyzed (e.g. `data/data1.txt` or `/home/user/sales-analytics-application/data/data1.txt`)
