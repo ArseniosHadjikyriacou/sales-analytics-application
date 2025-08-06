@@ -1,6 +1,8 @@
 package src;
 
 import src.utils.Sale;
+import src.utils.DateFormatValidator;
+import src.utils.DateFormatException;
 
 import java.io.File;
 import java.util.Scanner;
@@ -33,6 +35,9 @@ public class Main {
         Scanner dataReader = new Scanner(dataFile);
         while (dataReader.hasNextLine()) {
           String data = dataReader.nextLine();
+          // String[] parts = data.split("##");
+          // String dateString = parts[0];
+          // String amountString = parts[1];
           sales.add(data);
         }
         dataReader.close();
@@ -51,15 +56,16 @@ public class Main {
 
     while (true) {
       System.out.println("Enter a valid date format.");
-      System.out.println("Supported formats: dd/MM/yyyy, MM/dd/yyyy, yyyy/MM/dd");
+      System.out.println("Supported formats: " + DateFormatValidator.getSupportedFormatsString());
       dateFormat = scanner.nextLine();
 
-      if (dateFormat.equals("dd/MM/yyyy") || dateFormat.equals("MM/dd/yyyy") || dateFormat.equals("yyyy/MM/dd")) {
+      try {
+        DateFormatValidator.validateDateFormat(dateFormat);
         System.out.println("You entered date format: " + dateFormat);
         System.out.println();
         break;
-      } else {
-        System.out.println("Invalid date format. Please try again.");
+      } catch (DateFormatException e) {
+        System.out.println(e.getMessage());
         System.out.println();
       }
     }
