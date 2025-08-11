@@ -1,41 +1,39 @@
 package src.utils;
 
-public class Sale {
-  private String date;
-  private String product;
-  private int quantity;
-  private double price;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-  public Sale(String date, String product, int quantity, double price) {
+public class Sale implements Comparable<Sale> {
+  private LocalDate date;
+  private double amount;
+  private String dateFormat;
+
+  public Sale(LocalDate date, double amount, String dateFormat) {
     this.date = date;
-    this.product = product;
-    this.quantity = quantity;
-    this.price = price;
+    this.amount = amount;
+    this.dateFormat = dateFormat;
   }
 
-  public String getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
-  public String getProduct() {
-    return product;
+  public String getDateFormat() {
+    return dateFormat;
   }
 
-  public int getQuantity() {
-    return quantity;
-  }
-
-  public double getPrice() {
-    return price;
+  public double getAmount() {
+    return amount;
   }
 
   @Override
   public String toString() {
-    return "Sale{" +
-           "date=" + date +
-           ", product=" + product +
-           ", quantity=" + quantity +
-           ", price=" + price +
-           '}';
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+    return "Sale{" + "date:" + formatter.format(date) + ", amount=" + amount + '}';
+  }
+
+  @Override
+  public int compareTo(Sale other) {
+    return this.date.compareTo(other.date);
   }
 }
