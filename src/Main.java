@@ -40,13 +40,15 @@ public class Main {
       }
     }
 
+    // Create a single scanner object to process all user inputs
+    Scanner cmdScanner = new Scanner(System.in);
+
     // Get the date format from the user
-    Scanner dateScanner = new Scanner(System.in);
     String dateFormat = "";
     while (true) {
       System.out.println("Enter a valid date format.");
       System.out.println("Supported formats: " + DateFormatValidator.getSupportedFormatsString());
-      dateFormat = dateScanner.nextLine();
+      dateFormat = cmdScanner.nextLine();
 
       try {
         DateFormatValidator.validateDateFormat(dateFormat);
@@ -55,7 +57,6 @@ public class Main {
         System.out.println(e.getMessage());
       }
     }
-    dateScanner.close();
     System.out.println();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
 
@@ -89,17 +90,86 @@ public class Main {
         System.exit(1);
       }
     }
-    System.out.println("Number of sales to be processed: " + sales.size());
+    System.out.println("Number of available sales for processing: " + sales.size());
 
     // Sort the sales array
     Collections.sort(sales);
+    LocalDate firstSaleDate = sales.get(0).getDate();
+    LocalDate lastSaleDate = sales.get(sales.size() - 1).getDate();
 
-    System.out.println("Sorted sales data:");
-    for (Sale sale : sales) {
-      System.out.println(sale);
+    System.out.println("Sales range: " + firstSaleDate.format(formatter) + " to " + lastSaleDate.format(formatter));
+    System.out.println();
+
+    // Get the start date for analysis from the user
+    LocalDate startDate;
+    while (true) {
+      System.out.println("Enter a valid start date in the format: " + dateFormat);
+      String startDateString = cmdScanner.nextLine();
+
+      try {
+        startDate = LocalDate.parse(startDateString, formatter);
+        if (startDate.isBefore(firstSaleDate) || startDate.isAfter(lastSaleDate)) {
+          System.out.println("Start date must be within the sales range: " + firstSaleDate.format(formatter) + " to " + lastSaleDate.format(formatter));
+          System.out.println();
+          continue;
+        }
+        break;
+      } catch (DateTimeParseException e) {
+        System.out.println("Invalid date format: " + startDateString + " does not match the format " + dateFormat);
+        System.out.println();
+      }
     }
 
-  }
+    // Get the end date for analysis from the user
+    LocalDate endDate;
+    while (true) {
+      System.out.println("Enter a valid end date in the format: " + dateFormat);
+      String endDateString = cmdScanner.nextLine();
 
+      try {
+        endDate = LocalDate.parse(endDateString, formatter);
+        if (endDate.isBefore(startDate)) {
+          System.out.println("End date cannot be before start date: " + startDate.format(formatter));
+          System.out.println();
+          continue;
+        }
+        if (endDate.isBefore(firstSaleDate) || endDate.isAfter(lastSaleDate)) {
+          System.out.println("End date must be within the sales range: " + firstSaleDate.format(formatter) + " to " + lastSaleDate.format(formatter));
+          System.out.println();
+          continue;
+        }
+        break;
+      } catch (DateTimeParseException e) {
+        System.out.println("Invalid date format: " + endDateString + " does not match the format " + dateFormat);
+        System.out.println();
+      }
+    }
+    // Close the command scanner since we no longer need it
+    cmdScanner.close();
+
+    // Perform analysis on the sales data within the specified date range
+    int startDateIndex = -1, endDateIndex = -1;
+    for (int i = 0; i < sales.size(); i++) {
+      LocalDate date = sales.get(i).getDate();
+      if (startDateIndex == -1 && !date.isBefore(startDate)) {
+        startDateIndex = i;
+      }
+      if (date.isAfter(endDate)) {
+        endDateIndex = i - 1;
+        break;
+      }
+    }
+    
+    // If we never found a date after endDate, it means endDate includes the last sales
+    if (endDateIndex == -1) {
+      endDateIndex = sales.size() - 1;
+    }
+
+    System.out.println();
+    // System.out.println("Analyzing sales from index " + startDateIndex + " to " + endDateIndex);
+    System.out.println("Average of sales is: " + Sale.average(sales, startDateIndex, endDateIndex));
+    System.out.println("Standard deviation of sales is: " + Sale.sigma(sales, startDateIndex, endDateIndex));
+
+  }
 
 }
